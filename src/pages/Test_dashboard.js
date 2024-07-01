@@ -1,45 +1,57 @@
 import React, { useContext, useEffect, useState } from 'react'
-import AuthContext from '../context/AuthContext'
 import NavBar from '../components/Navbar'
-import Dashboard from './Dashboard'
 import Service from '../Services/Service'
+import Dividendes from '../Services/Dividendes'
+import { data } from 'autoprefixer'
+
+
+
+
+
+
 function Test_dashboard() {
-    let { user, logoutUser } = useContext(AuthContext)
-    const [apiData, setApiData] = useState([])
-    const [accessToken, setAccessToken] = useState('');
+    
 
     const [mode, setMode] = useState('view')
-    function toggleMode() {
-        setMode('other')
-    }
+    const [apiData, setApiData] = useState(null)
+    const [accessToken, setAccessToken] = useState('');
 
-    /*
+
+    useEffect(() => {
+        // Retrieve the JSON string from localStorage
+        const tokenString = localStorage.getItem('authTokens');
+        if (tokenString) {
+            // Parse the JSON string into an object
+            const tokenObject = JSON.parse(tokenString);
+
+            // Extract the access token value
+            const accessTokenValue = tokenObject.access;
+
+            // Update the state with the access token value
+            setAccessToken(accessTokenValue);
+            const URL = 'http://127.0.0.1:8000/api/countries'
+
+
+            fetch(URL, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessTokenValue}`,
+
+                },
+            }).then(res => res.json()).then(data => {
+                setApiData(data)
+                console.log('api data : ')
+                console.log(apiData);
+            })
+        } else {
+            console.error('No authTokens found in localStorage');
+        }
+    }, []);
+
     
-    <div class="space-y-6 flex flex-col items-center justify-start  gap-2">
 
-                        <button onClick={() => setMode('Service')} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Services
-                            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
-                            </svg>
-                        </button>
-
-                        <button onClick={() => setMode('view')} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Redevences
-                            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
-                            </svg>
-                        </button>
-
-
-                        <button onClick={() => setMode('view')} type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            Dividendes
-                            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
-                            </svg>
-                        </button>
-
-                    </div>*/
+    
     return (
         <div>
             <NavBar />
@@ -73,7 +85,6 @@ function Test_dashboard() {
                             <a href="#">
                                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Services</h5>
                             </a>
-                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
                             <button onClick={()=>setMode('Service')} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 Services
                                 <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -86,7 +97,6 @@ function Test_dashboard() {
                             <a href="#">
                                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Redevences</h5>
                             </a>
-                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
                             <button onClick={()=>setMode('view')}  class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 Redevences
                                 <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -99,8 +109,7 @@ function Test_dashboard() {
                             <a href="#">
                                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Dividendes</h5>
                             </a>
-                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-                            <button onClick={()=>setMode('view')} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <button onClick={()=>setMode('Dividendes')} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 Dividendes
                                 <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
@@ -111,17 +120,11 @@ function Test_dashboard() {
 
                     </div>
                 </div> : <div></div>}
-                
-
-
-
-                
-
-
-
-
+            
             </div>
-            {mode === 'Service' ? <Service /> : <div></div>}
+
+            {mode === 'Service' ? <Service apiData={apiData} /> : <div></div>}
+            {mode === 'Dividendes'?<Dividendes/> : <div></div>}
 
         </div>
     )

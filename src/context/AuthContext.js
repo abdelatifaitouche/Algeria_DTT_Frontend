@@ -7,7 +7,7 @@ const AuthContext = createContext()
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
-
+    //let [user , setUser] = useState(null);
     let [user, setUser] = useState(() => (localStorage.getItem('authTokens') ? jwtDecode(localStorage.getItem('authTokens')) : null))
     let [authTokens, setAuthTokens] = useState(() => (localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null))
 
@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const updateToken = async () => {
+        console.log('updating tokenz')
         const response = await fetch('http://127.0.0.1:8000/token/refresh/', {
             method: 'POST',
             headers: {
@@ -93,3 +94,20 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     )
 }
+
+
+/**
+ * 
+ * We have jwt token with Both : 
+ *  Access token and refresh token
+ *  The access token has a duration
+ *  if the duration is over : 
+ *      Use the refresh token to get new access
+ *  and of the refresh is over : 
+ *      Logout the user
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
